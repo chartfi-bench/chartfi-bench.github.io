@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8"/><meta content="width=device-width,initial-scale=1" name="viewport"/><meta content="ChartFI: Benchmarking faithfulness and insightfulness of chart descriptions from multimodal large language models." name="description"/><title>ChartFI — Chart Faithfulness &amp; Insightfulness</title><link href="style.css?v=20261024-resource-gap" rel="stylesheet"/><script defer="" src="app.js?v=20261023-clean"></script></head><body>
+<nav aria-label="Section navigation"><a class="brand" href="#top">Chart<span>FI</span></a><div><a href="#introduction">Introduction</a><a href="#metrics">Metrics</a><a href="#leaderboard">Leaderboard</a><a href="#comparison">Comparison</a><a href="#citation">Citation</a></div></nav>
+<header id="top"><h1><svg aria-hidden="true" viewbox="0 0 48 48"><rect fill="#4c83d3" height="18" rx="2" width="9" x="5" y="25"></rect><rect fill="#76b6a3" height="29" rx="2" width="9" x="20" y="14"></rect><rect fill="#e4b866" height="38" rx="2" width="9" x="35" y="5"></rect></svg>Chart<span>FI</span></h1><h2>Benchmarking <span class="title-keyword">Faithfulness</span> and <span class="title-keyword">Insightfulness</span> of Chart Descriptions from Multimodal Large Language Models</h2>
+<p class="authors">Fen Wang<sup>*1,2</sup>, Zekai Shao<sup>*1</sup>, Qiman Kang<sup>1</sup>, Chunran Hu<sup>1</sup>, Zhixuan Zhang<sup>1</sup>, Lexu Xie<sup>2</sup>, Chao Liu<sup>1,2</sup>, Siming Chen<sup>†1</sup></p>
+<p class="affiliations"><sup>1</sup> Fudan University   <sup>2</sup> Zhengzhou Zhongke Institute of Integrated Circuit and System Application</p><p class="venue">VIS 2026</p><p class="contribution">* Equal contribution   † Corresponding author</p>
+<div class="resources"><a href="https://arxiv.org/abs/2605.23694"><span aria-hidden="true" class="resource-icon-wrap"><svg aria-hidden="true" class="resource-icon" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" viewbox="0 0 24 24"><path d="M14 3H6a1 1 0 0 0-1 1v16a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V8z"></path><path d="M14 3v5h5M8 12h8M8 16h6"></path></svg></span><span>Paper</span></a><a href="https://github.com/wangfen01/ChartFI"><span aria-hidden="true" class="resource-icon-wrap"><svg aria-hidden="true" class="resource-icon" fill="currentColor" viewbox="0 0 24 24"><path d="M12 .75a11.25 11.25 0 0 0-3.558 21.923c.563.104.768-.244.768-.542 0-.267-.01-.975-.015-1.914-3.13.68-3.79-1.51-3.79-1.51-.512-1.302-1.25-1.65-1.25-1.65-1.022-.7.078-.686.078-.686 1.13.08 1.724 1.16 1.724 1.16 1.005 1.722 2.637 1.225 3.28.937.102-.728.393-1.225.715-1.507-2.5-.285-5.13-1.25-5.13-5.563 0-1.23.44-2.235 1.16-3.023-.116-.285-.503-1.43.11-2.98 0 0 .946-.303 3.095 1.155a10.78 10.78 0 0 1 5.626 0c2.147-1.458 3.09-1.155 3.09-1.155.616 1.55.229 2.695.113 2.98.724.788 1.159 1.793 1.159 3.023 0 4.325-2.633 5.275-5.142 5.554.404.35.765 1.044.765 2.105 0 1.52-.014 2.747-.014 3.12 0 .3.203.65.774.54A11.252 11.252 0 0 0 12 .75Z"></path></svg></span><span>GitHub</span></a><a href="https://huggingface.co/datasets/FenWang/ChartFI-Bench" rel="noopener noreferrer" target="_blank"><span aria-hidden="true" class="resource-icon-wrap">🤗</span><span>Hugging Face</span></a></div></header>
+<main><section class="narrow" id="introduction"><h2><svg aria-hidden="true" class="section-icon" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.7" viewbox="0 0 24 24"><path d="M5 3h11l3 3v15H5z"></path><path d="M15 3v5h4M8 12h8M8 16h6"></path></svg>Introduction</h2><p class="abstract">Chart descriptions are essential for accessibility, cross-modal retrieval, and assisting readers in extracting insights from complex visualizations. As multimodal large language models (MLLMs) are increasingly adopted for automated chart description generation, a critical question arises: how faithfully and insightfully do these models actually describe charts? Current benchmarks fall short on two fronts: existing datasets consist of simple, homogeneous charts paired with shallow, fact-enumerating descriptions; and prevailing metrics fail to capture the multi-faceted nature of description quality. To address these gaps, we present the Chart Faithfulness and Insightfulness Benchmark (ChartFI-Bench). We first summarize four dimensions that characterize high-quality chart descriptions: factual accuracy, salient feature emphasis, domain-informed guidance, and chart–text complementarity. Guided by these dimensions, we construct a high-quality benchmark comprising 896 chart–description pairs, which feature visually complex charts and semantically rich descriptions. Furthermore, we design four aligned evaluation metrics—Faithfulness, Coverage, Informativeness, and Acuity—to systematically assess the quality of descriptions across these dimensions. Experiments conducted on mainstream MLLMs demonstrate the effectiveness of the proposed framework and reveal common weaknesses among existing models.</p><figure class="intro-figure"><img alt="A collection of complex charts showing varied chart types and visual encodings" height="1400" loading="lazy" src="assets/chart-overview-hires.png" width="3200"/></figure></section>
+<section id="metrics"><h2><svg aria-hidden="true" class="section-icon" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.7" viewbox="0 0 24 24"><path d="M4 20V4M4 20h16M8 16v-4M13 16V8M18 16V5"></path></svg>Evaluation Metrics</h2><details class="fact-explainer"><summary>Chart Insight Decomposition</summary><p>We first decompose each chart description into fine-grained chart insights for evaluation. L2 and L3 insights are represented as structured data facts; L1 and L4 content is instead split into fine-grained sentences, each conveying a single insight.</p><p>Each structured data fact is represented as <strong>(type, parameters, measure(s), context, breakdown(s), focus)</strong>.</p><div class="fact-example-box"><p class="fact-example-label">Example</p><blockquote class="fact-example">“For females, both C3 and C4 ratios show a general increase with age.”</blockquote><dl class="fact-fields"><dt>Type</dt><dd>trend</dd><dt>Parameters</dt><dd>INCREASE</dd><dt>Measure(s)</dt><dd>C3 and C4 ratios</dd><dt>Context</dt><dd>N/A</dd><dt>Breakdown(s)</dt><dd>Gender</dd><dt>Focus</dt><dd>Female</dd></dl></div></details><div class="metrics-grid"><article class="metric m0"><div class="metric-top"><span class="metric-number">01</span><span class="evaluation-method">LLM-as-a-Judge Evaluation</span></div><h3>Faithfulness</h3><p class="question">Does the description accurately reflect the chart?</p><p>Faithfulness measures how accurately the description reflects the chart without hallucinations.</p><details><summary>How it is evaluated</summary><div class="formula"><math alttext="\mathrm{Faithfulness}=1-\frac{N_{\text{error}}}{N_{\text{total}}}" display="block"><semantics><mrow><mi>Faithfulness</mi><mo>=</mo><mrow><mn>1</mn><mo>−</mo><mfrac><msub><mi>N</mi><mtext>error</mtext></msub><msub><mi>N</mi><mtext>total</mtext></msub></mfrac></mrow></mrow><annotation encoding="application/x-tex">\mathrm{Faithfulness}=1-\frac{N_{\text{error}}}{N_{\text{total}}}</annotation></semantics></math></div><p class="formula-legend"><span class="symbol-definition"><i>N<sub>total</sub></i>: Number of chart insights in the description</span><span class="symbol-definition"><i>N<sub>error</sub></i>: Number of erroneous chart insights.</span></p></details></article><article class="metric m1"><div class="metric-top"><span class="metric-number">02</span><span class="evaluation-method">LLM-assisted Heuristic Evaluation</span></div><h3>Coverage</h3><p class="question">How well does the description cover the reference insights?</p><p>Matches generated chart insights with reference insights.</p><details><summary>How it is evaluated</summary><ol class="method-steps"><li><strong>Type-specific fact matching:</strong> compare facts using rules tailored to their types.</li><li><strong>Schema-grounded fact normalization:</strong> normalize fact representations before comparison.</li><li><strong>Cross-type semantic matching:</strong> identify equivalent insights expressed through different fact types.</li></ol><div class="formula"><math display="block"><mrow><mtext>Precision</mtext><mo>=</mo><mfrac><mi>N</mi><mrow><mo>|</mo><mi>M</mi><mo>|</mo></mrow></mfrac><mspace width="2em"></mspace><mtext>Recall</mtext><mo>=</mo><mfrac><mi>N</mi><mrow><mo>|</mo><mi>R</mi><mo>|</mo></mrow></mfrac></mrow></math><math display="block"><mrow><mtext>Coverage</mtext><mo>=</mo><msub><mi>F</mi><mn>1</mn></msub><mo>=</mo><mfrac><mrow><mn>2</mn><mo>×</mo><mtext>Precision</mtext><mo>×</mo><mtext>Recall</mtext></mrow><mrow><mtext>Precision</mtext><mo>+</mo><mtext>Recall</mtext></mrow></mfrac></mrow></math></div><p class="formula-legend"><span class="symbol-definition"><i>N</i>: Number of matched insight pairs</span><span class="symbol-definition"><i>|M|</i>: Number of model-generated chart insights</span><span class="symbol-definition"><i>|R|</i>: Number of reference chart insights</span></p></details></article><article class="metric m2"><div class="metric-top"><span class="metric-number">03</span><span class="evaluation-method">LLM-assisted Heuristic Evaluation</span></div><h3>Informativeness</h3><p class="question">Does the description provide high-level semantic insights?</p><p>Informativeness measures whether the description highlights high-level semantic insights rather than merely stating obvious low-level visual details.</p><details><summary>How it is evaluated</summary><ol class="method-steps"><li><strong>Semantic decomposition:</strong> Decompose descriptions into insights across semantic levels.</li><li><strong>Weight initialization:</strong> assign a baseline weight to each semantic level.</li><li><strong>Adaptive modulation:</strong> adjust weights using the reference description’s distribution across levels, then average the weights of generated insights.</li></ol><div class="formula"><math alttext="w_{l}=\frac{b_{l}\exp(p_{l})}{\sum_{k=1}^{L}b_{k}\exp(p_{k})}" display="block"><semantics><mrow><msub><mi>w</mi><mi>l</mi></msub><mo>=</mo><mfrac><mrow><msub><mi>b</mi><mi>l</mi></msub><mo lspace="0.167em" rspace="0em">​</mo><mrow><mi>exp</mi><mo>⁡</mo><mrow><mo stretchy="false">(</mo><msub><mi>p</mi><mi>l</mi></msub><mo stretchy="false">)</mo></mrow></mrow></mrow><mrow><msubsup><mo>∑</mo><mrow><mi>k</mi><mo>=</mo><mn>1</mn></mrow><mi>L</mi></msubsup><mrow><msub><mi>b</mi><mi>k</mi></msub><mo lspace="0.167em" rspace="0em">​</mo><mrow><mi>exp</mi><mo>⁡</mo><mrow><mo stretchy="false">(</mo><msub><mi>p</mi><mi>k</mi></msub><mo stretchy="false">)</mo></mrow></mrow></mrow></mrow></mfrac></mrow><annotation encoding="application/x-tex">w_{l}=\frac{b_{l}\exp(p_{l})}{\sum_{k=1}^{L}b_{k}\exp(p_{k})}</annotation></semantics></math><math alttext="\mathrm{Informativeness}=\frac{1}{|Y|}\sum_{i=1}^{|Y|}w_{l}(y_{i})" display="block"><semantics><mrow><mi>Informativeness</mi><mo>=</mo><mrow><mfrac><mn>1</mn><mrow><mo stretchy="false">|</mo><mi>Y</mi><mo stretchy="false">|</mo></mrow></mfrac><mo lspace="0em" rspace="0em">​</mo><mrow><munderover><mo movablelimits="false">∑</mo><mrow><mi>i</mi><mo>=</mo><mn>1</mn></mrow><mrow><mo stretchy="false">|</mo><mi>Y</mi><mo stretchy="false">|</mo></mrow></munderover><mrow><msub><mi>w</mi><mi>l</mi></msub><mo lspace="0em" rspace="0em">​</mo><mrow><mo stretchy="false">(</mo><msub><mi>y</mi><mi>i</mi></msub><mo stretchy="false">)</mo></mrow></mrow></mrow></mrow></mrow><annotation encoding="application/x-tex">\mathrm{Informativeness}=\frac{1}{|Y|}\sum_{i=1}^{|Y|}w_{l}(y_{i})</annotation></semantics></math></div><p class="formula-legend"><span class="symbol-definition"><i>b<sub>l</sub></i>: Base weight assigned to semantic level</span><span class="symbol-definition"><i>p<sub>l</sub></i>: Proportion of facts at level l in the reference description</span><span class="symbol-definition"><i>w<sub>l</sub></i>: Normalized context-aware weight for level l</span><span class="symbol-definition"><i>|Y|</i>: Total number of facts in the generated description</span></p></details></article><article class="metric m3"><div class="metric-top"><span class="metric-number">04</span><span class="evaluation-method">LLM-as-a-Judge Evaluation</span></div><h3>Acuity</h3><p class="question">Does the description connect what the chart shows with what it means?</p><p>Acuity measures whether the description bridges the gap between what the chart shows and what it means.</p><details><summary>How it is evaluated</summary><p>Each applicable subdimension is rated on a 5-point scale:</p><dl class="acuity-dimensions"><dt>Domain Knowledge Accuracy</dt><dd>Incorporates technically accurate and pertinent domain concepts.</dd><dt>Knowledge Integration Efficiency</dt><dd>Enhances reader understanding without unnecessary elaboration.</dd><dt>Insight Prioritization</dt><dd>Emphasizes analytically significant findings over merely visually prominent ones.</dd><dt>Etiological Explanation</dt><dd>Provides plausible, domain-grounded explanations for why phenomena emerge.</dd><dt>Multivariate Synthesis</dt><dd>Synthesizes information across variables or subplots to derive higher-order insights.</dd></dl><p>The overall Acuity score aggregates evaluations across five subdimensions.</p><div class="formula"><math alttext="\mathrm{Acuity}=\frac{1}{N}\sum_{i=1}^{N}A_{i}" display="block"><semantics><mrow><mi>Acuity</mi><mo>=</mo><mrow><mfrac><mn>1</mn><mi>N</mi></mfrac><mo lspace="0em" rspace="0em">​</mo><mrow><munderover><mo movablelimits="false">∑</mo><mrow><mi>i</mi><mo>=</mo><mn>1</mn></mrow><mi>N</mi></munderover><msub><mi>A</mi><mi>i</mi></msub></mrow></mrow></mrow><annotation encoding="application/x-tex">\mathrm{Acuity}=\frac{1}{N}\sum_{i=1}^{N}A_{i}</annotation></semantics></math></div></details></article></div></section>
+<section id="leaderboard"><h2><svg aria-hidden="true" class="section-icon" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.7" viewbox="0 0 24 24"><path d="M8 3h8v5a4 4 0 0 1-8 0zM8 5H4v3a4 4 0 0 0 4 4M16 5h4v3a4 4 0 0 1-4 4M12 12v6M8 21h8M9 18h6"></path></svg>Leaderboard</h2><div class="table-toolbar"><label>Sort by <select id="sort"><option value="4">Faithfulness</option><option value="5">Coverage</option><option value="6">Informativeness</option><option value="7">Acuity</option><option value="0">BLEU</option><option value="1">METEOR</option><option value="2">ROUGE</option><option value="3">BLEURT</option></select></label></div><div aria-label="Model evaluation scores" class="table-scroll" role="region" tabindex="0"><table class="ltx_tabular ltx_centering ltx_align_middle" id="S4.T3.6"><thead><tr>
+<th rowspan="2"><span>Model</span></th>
+<th colspan="4"><span>Reference-based Metrics</span></th>
+<th colspan="4"><span>ChartFI</span></th></tr><tr>
+<th><span>BLEU</span></th>
+<th><span>METEOR</span></th>
+<th><span>ROUGE</span></th>
+<th><span>BLEURT</span></th>
+<th><span>Faithfulness</span></th>
+<th><span>Coverage</span></th>
+<th><span>Informativeness</span></th>
+<th><span>Acuity</span></th></tr></thead><tbody><tr>
+<td>GPT-5.4</td>
+<td><span>0.0731</span></td>
+<td>0.2894</td>
+<td><span>0.2206</span></td>
+<td>-0.4832</td>
+<td><span>0.9501</span></td>
+<td><span>0.3358</span></td>
+<td><span>0.3188</span></td>
+<td><span>3.1233</span></td></tr><tr>
+<td>Gemini-3-Flash</td>
+<td>0.0723</td>
+<td><span>0.3076</span></td>
+<td>0.2163</td>
+<td><span>-0.4342</span></td>
+<td>0.9471</td>
+<td>0.3145</td>
+<td>0.2762</td>
+<td>3.0719</td></tr><tr>
+<td>Claude-Sonnet-4.6</td>
+<td>0.0651</td>
+<td>0.2852</td>
+<td>0.2139</td>
+<td>-0.4870</td>
+<td>0.8712</td>
+<td>0.3038</td>
+<td>0.3033</td>
+<td>2.8919</td></tr><tr>
+<td>Qwen3.5-plus</td>
+<td>0.0615</td>
+<td>0.2821</td>
+<td>0.1939</td>
+<td>-0.4803</td>
+<td>0.8638</td>
+<td>0.3059</td>
+<td>0.2854</td>
+<td>2.9930</td></tr><tr>
+<td>Qwen3.5-27B</td>
+<td>0.0574</td>
+<td>0.2687</td>
+<td>0.1938</td>
+<td>-0.4849</td>
+<td>0.8591</td>
+<td>0.2901</td>
+<td>0.2747</td>
+<td>2.8249</td></tr><tr>
+<td>Llama-4-Scout-17B-16E</td>
+<td>0.0450</td>
+<td>0.2541</td>
+<td>0.1915</td>
+<td>-0.4745</td>
+<td>0.7348</td>
+<td>0.2539</td>
+<td>0.3058</td>
+<td>2.1833</td></tr><tr>
+<td>InternVL3.5-14B</td>
+<td>0.0538</td>
+<td>0.2578</td>
+<td>0.2001</td>
+<td>-0.4764</td>
+<td>0.8134</td>
+<td>0.2461</td>
+<td>0.2667</td>
+<td>1.7589</td></tr></tbody></table></div></section>
+<section id="comparison"><h2><svg aria-hidden="true" class="section-icon" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.7" viewbox="0 0 24 24"><rect height="16" rx="2" width="18" x="3" y="4"></rect><path d="M3 10h18M10 4v16M16 4v16"></path></svg>Benchmark Comparison</h2><div aria-label="Benchmark comparison" class="table-scroll" role="region" tabindex="0"><table class="ltx_tabular ltx_align_middle" id="S0.T1.6.1"><thead><tr>
+<th rowspan="2"><span>Dataset</span></th>
+<th rowspan="2"><span>Size</span></th>
+<th rowspan="2"><span>Word Count</span></th>
+<th rowspan="2"><span>
+<span>
+<span>
+<span><span>Chart</span></span></span>
+<span>
+<span><span>Types</span></span></span>
+</span></span></th>
+<th rowspan="2"><span>
+<span>
+<span>
+<span><span>Semantic</span></span></span>
+<span>
+<span><span>Coverage</span></span></span>
+</span></span></th>
+<th rowspan="2"><span>
+<span>
+<span>
+<span><span>Multi-</span></span></span>
+<span>
+<span><span>Chart</span></span></span>
+</span></span></th>
+<th colspan="4"><span>Evaluation Dimensions</span></th></tr><tr>
+<th><span>Faithfulness</span></th>
+<th><span>Coverage</span></th>
+<th><span>Informativeness</span></th>
+<th><span>Acuity</span></th></tr></thead><tbody><tr>
+<td><a href="https://dx.doi.org/10.18653/v1/2022.acl-long.277" rel="noopener noreferrer" target="_blank">Chart-to-Text</a></td>
+<td>44K</td>
+<td>120</td>
+<td>6</td>
+<td>L1–L3</td>
+<td>✗</td>
+<td>✗</td>
+<td>✓</td>
+<td>✗</td>
+<td>✗</td></tr><tr>
+<td><a href="https://arxiv.org/html/2605.23694v3#bib.bib67" rel="noopener noreferrer" target="_blank">ChartSumm</a></td>
+<td>84K</td>
+<td>45</td>
+<td>3</td>
+<td>L1–L3</td>
+<td>✗</td>
+<td>✗</td>
+<td>✓</td>
+<td>✗</td>
+<td>✗</td></tr><tr>
+<td><a href="https://dx.doi.org/10.18653/v1/2023.acl-long.401" rel="noopener noreferrer" target="_blank">VisText</a></td>
+<td>12K</td>
+<td>77</td>
+<td>3</td>
+<td>L1–L3</td>
+<td>✗</td>
+<td>✓</td>
+<td>✓</td>
+<td>✗</td>
+<td>✗</td></tr><tr>
+<td><a href="https://dx.doi.org/10.1109/IJCNN64981.2025.11227777" rel="noopener noreferrer" target="_blank">ChartLlama</a></td>
+<td>11K</td>
+<td>-</td>
+<td>10</td>
+<td>L1–L3</td>
+<td>✗</td>
+<td>✗</td>
+<td>✓</td>
+<td>✗</td>
+<td>✗</td></tr><tr>
+<td><a href="https://dx.doi.org/10.1145/3613904.3642943" rel="noopener noreferrer" target="_blank">VL2NL</a></td>
+<td>2K</td>
+<td>161</td>
+<td>10</td>
+<td>L1–L2</td>
+<td>✗</td>
+<td>✗</td>
+<td>✓</td>
+<td>✓</td>
+<td>✗</td></tr><tr>
+<td><a href="https://dx.doi.org/10.1109/TVCG.2025.3567122" rel="noopener noreferrer" target="_blank">ChartInsighter</a></td>
+<td>75</td>
+<td>157</td>
+<td>1</td>
+<td>L1–L3</td>
+<td>✗</td>
+<td>✗</td>
+<td>✓</td>
+<td>✓</td>
+<td>✗</td></tr><tr>
+<td><a href="https://arxiv.org/html/2605.23694v3#bib.bib9" rel="noopener noreferrer" target="_blank">ChartCap</a></td>
+<td class="size-max"><span>565K</span></td>
+<td>223</td>
+<td>9</td>
+<td>L1–L3</td>
+<td>✓</td>
+<td>✓</td>
+<td>✓</td>
+<td>✗</td>
+<td>✗</td></tr><tr>
+<td>ChartFI (Ours)</td>
+<td>896</td>
+<td><span>241</span></td>
+<td><span>14</span></td>
+<td><span>L1–L4</span></td>
+<td>✓</td>
+<td>✓</td>
+<td>✓</td>
+<td>✓</td>
+<td>✓</td></tr></tbody></table></div><p class="table-note">Semantic Coverage refers to the <a href="https://arxiv.org/abs/2110.04406" target="_blank" rel="noopener noreferrer">four-level semantic content</a> for chart descriptions: L1, chart construction; L2, statistical summaries; L3, perceptual and cognitive observations; L4, contextual and domain-specific insights.</p><figure class="comparison-figure"><img alt="Examples comparing charts and descriptions from existing benchmarks with ChartFI-Bench" loading="lazy" src="assets/benchmark-comparison-v3.jpg"/><figcaption><p>Descriptions are color-coded by semantic level:</p><ul aria-label="Semantic level color legend" class="semantic-legend"><li><span aria-hidden="true" class="level-dot l1"></span><span><strong>L1</strong> Chart construction</span></li><li><span aria-hidden="true" class="level-dot l2"></span><span><strong>L2</strong> Statistical summaries</span></li><li><span aria-hidden="true" class="level-dot l3"></span><span><strong>L3</strong> Perceptual and cognitive observations</span></li><li><span aria-hidden="true" class="level-dot l4"></span><span><strong>L4</strong> Contextual and domain-specific insights</span></li></ul></figcaption></figure></section>
+<section class="narrow" id="citation"><h2>Citation</h2><div class="citation-top"><p>If you use ChartFI, please cite our paper.</p><button id="copy-citation">Copy BibTeX</button></div><pre><code id="bibtex">@article{wang2026chartfi,
+  title={ChartFI: Benchmarking Faithfulness and Insightfulness of Chart Descriptions from Multimodal Large Language Models},
+  author={Wang, Fen and Shao, Zekai and Kang, Qiman and Hu, Chunran and Zhang, Zhixuan and Xie, Lexu and Liu, Chao and Chen, Siming},
+  journal={arXiv preprint arXiv:2605.23694},
+  year={2026},
+  url={https://arxiv.org/abs/2605.23694}
+}</code></pre><span id="copy-status" role="status"></span></section></main>
+<footer>Website layout adapted from <a href="https://charxiv.github.io/">CharXiv</a> and the <a href="https://nerfies.github.io/">Nerfies</a> academic project-page style. Research content: <a href="https://arxiv.org/abs/2605.23694v3">ChartFI, arXiv v3</a>.</footer>
+</body></html>
